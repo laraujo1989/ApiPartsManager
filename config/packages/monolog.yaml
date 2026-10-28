@@ -41,7 +41,7 @@ when@prod:
                 buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             nested:
                 type: stream
-                path: php://stderr
+                path: "%kernel.logs_dir%/%kernel.environment%.log"   # var/log/prod.log (con php-fpm, stderr se pierde)
                 level: debug
                 formatter: monolog.formatter.json
             console:
