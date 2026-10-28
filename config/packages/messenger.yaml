@@ -1,0 +1,17 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            # Cola en la base de datos: la consume `php bin/console messenger:consume async` (búsquedas web largas).
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    auto_setup: false
+                retry_strategy:
+                    max_retries: 0
+            failed: 'doctrine://default?queue_name=failed&auto_setup=0'
+            sync: 'sync://'
+
+        routing:
+            'App\Message\WebSearchMessage': async

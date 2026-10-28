@@ -1,0 +1,39 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_profiler(/|$)|(_wdt|assets|build)/)
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            user_checker: App\Security\UserChecker
+            json_login:
+                check_path: api_login
+                username_path: username
+                password_path: password
+            logout:
+                path: api_logout
+            login_throttling:
+                max_attempts: 8
+
+    access_control:
+        - { path: ^/api/(login|logout|public|integrations|auth/register|auth/forgot-password|auth/reset-password), roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10
